@@ -12,6 +12,7 @@ export_file_name = "newfile.blend"
 # - name can be set in the json under objName
 # - names should match for blender
 default_light_insert = "25mmSquare"
+hide_inserts = False
 
 C = bpy.context
 # set metric millimeters in the file and scale for precision
@@ -38,7 +39,7 @@ if argv is not None:
 def select_collection(name):
     bpy.context.view_layer.active_layer_collection = bpy.data.scenes['Scene'].view_layers['ViewLayer'].layer_collection.children[name]
 
-def set_boolean_modifiers(collectionName):
+def set_boolean_modifiers(collectionName, hide=False):
     # set up a boolean operator on every item to cut hole
     # hide it, so when opened the playfield is cut.
     for led in bpy.data.collections[collectionName].all_objects:
@@ -46,7 +47,7 @@ def set_boolean_modifiers(collectionName):
         b = playfield.modifiers.new(type="BOOLEAN", name=led.name)
         b.object = led
         b.operation = "DIFFERENCE"    
-        led.hide_set(True) ## TODO- change this to hide the collection not every led
+        led.hide_set(hide) ## TODO- change this to hide the collection not every led
 
 def generate_collection(collectionName, jsonSection):
     # set up a CNC insert for every LED
@@ -102,6 +103,10 @@ with open(machine_json_path, 'r') as f:
 #C.scene.camera.space_data.clip_end = 100000
 # delete std cube
 bpy.ops.object.delete()
+bpy.data.objects['Camera'].select_set(True)
+bpy.ops.object.delete()
+bpy.data.objects['Light'].select_set(True)
+bpy.ops.object.delete()
 
 # create and link some collections
 switches = bpy.data.collections.new("SWITCHES")
@@ -139,11 +144,11 @@ playfield.select_set(False)
 
 generate_collection("LEDS", "PRLeds") # create led collection items
 if cut_holes:
-    set_boolean_modifiers("LEDS") # cut led holes
+    set_boolean_modifiers("LEDS", hide_inserts) # cut led holes
 
 generate_collection("LAMPS", "PRLamps") # create led collection items
 if cut_holes:
-    set_boolean_modifiers("LAMPS") # cut lamp holes
+    set_boolean_modifiers("LAMPS", hide_inserts) # cut lamp holes
 
 # remove CNC collection
 collection_to_delete = bpy.data.collections['CNC']

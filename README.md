@@ -21,14 +21,14 @@ The meshes that are in the `*.obj` cuts are two pieces for lights, for leds and 
 - Install the zip in blender preferences / addons and open the properties `N` and you will see a `Svg outline` tab
 - Go into top orthographic view with `Num7` and export svg
 - You can export by selecting the playfield on its own
-- You can export every cut by making them visible and having all of them selected
+- You can export every cut by making them visible and having all of them selected (check material exprot)
 - TIP: you can just drag the mouse with the button held down to select, instead making visible one by one.
 - TIP: to get exact measurements from blender into the outline, make sure everything is correct as far as scaling / precision modelling.
 This generated table is already set for this though, the unit scale is `0.001`, metric millimeters.
 ![](.content/exportsvg-a.jpg)
 
 ## Just stroke outline exports
-By default there are no options to adjust the stroke or color in the addon.
+By default there are no options to adjust the stroke. "f'stroke="{fill}"'" will use material or unique colours.
 You can make some adjustments to the script, zip it and reinstall the addon with the changes.
 
 Make the following adjustments in the `write_to_svg.py` add-on script.
@@ -37,7 +37,7 @@ There should be two instances of this change
 ```
 # Remove stroke (add stroke)
 poly_str = poly_str.replace('stroke-width="2.0"', 'stroke-width="0.1"')
-poly_str = poly_str.replace('stroke="#555555"', 'stroke="black"')
+poly_str = poly_str.replace('stroke="#555555"', f'stroke="{fill}"')
 
 ## Remove the fill
 poly_str = poly_str.replace('fill="#66cc99"', f'fill="none"')
