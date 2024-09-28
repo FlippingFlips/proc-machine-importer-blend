@@ -58,6 +58,8 @@ def generate_collection(collectionName, jsonSection):
 
     for led in json_data[jsonSection]:    
         
+        # going over .001 and .001 pieces
+        # only real reason to use two was to get blender to cut a decent lip and hole consistently in the mesh.
         for x in range(1, 3):            
             if led["ObjName"] is None:
                 insert_obj = bpy.data.objects[default_light_insert + ".00" + str(x)]
@@ -122,6 +124,11 @@ C.scene.collection.children.link(drivers)
 bpy.ops.mesh.primitive_cube_add()
 playfield = C.selected_objects[0]
 playfield.name = "Playfield"
+# create material for PF
+mat = bpy.data.materials.new(playfield.name)
+playfield.data.materials.append(mat)
+playfield.active_material_index = 0
+# set location, dimensions and apply
 playfield.dimensions = (pf_width, pf_length, pf_thickness)
 playfield.location = (pf_width / 2, -(pf_length / 2), -(pf_thickness / 2))
 bpy.ops.object.transform_apply(location = True, scale = True, rotation = True)
